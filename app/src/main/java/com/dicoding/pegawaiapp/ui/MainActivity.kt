@@ -1,5 +1,6 @@
 package com.dicoding.pegawaiapp.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -18,31 +19,48 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         btn_activity_main_add_pegawai.setOnClickListener {
-            progressbar_activity_main.visibility = View.VISIBLE
 
-            val namaPegawai = edit_text_name.text.toString()
-            val posisiPegawai = edit_text_desg.text.toString()
-            val gajiPegawai = edit_text_salary.text.toString().toInt()
+            val namaPegawai = edit_text_name.text.toString().trim()
+            val posisiPegawai = edit_text_desg.text.toString().trim()
+            val gajiPegawai = edit_text_salary.text.toString().trim()
 
-            lifecycleScope.launch {
-                try {
-                    val response =
-                        pegawaiServices.addPegawai(namaPegawai, posisiPegawai, gajiPegawai)
-                    withContext(Dispatchers.Main) {
-                        if (response.isSuccessful) {
-                            progressbar_activity_main.visibility = View.GONE
-                            Toast.makeText(this@MainActivity, response.body(), Toast.LENGTH_LONG)
+            if (namaPegawai.isNotEmpty() && posisiPegawai.isNotEmpty() && gajiPegawai.isNotEmpty()) {
+                progressbar_activity_main.visibility = View.VISIBLE
+                lifecycleScope.launch {
+                    try {
+                        val response =
+                            pegawaiServices.addPegawai(
+                                namaPegawai,
+                                posisiPegawai,
+                                gajiPegawai.toInt()
+                            )
+                        withContext(Dispatchers.Main) {
+                            if (response.isSuccessful) {
+                                progressbar_activity_main.visibility = View.GONE
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    response.body(),
+                                    Toast.LENGTH_LONG
+                                )
+                                    .show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_LONG)
                                 .show()
                         }
                     }
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_LONG)
-                            .show()
-                    }
-                }
 
+                }
+            } else {
+                Toast.makeText(this@MainActivity, "Please Check Your Input", Toast.LENGTH_LONG)
+                    .show()
             }
+        }
+
+        btn_activity_main_daftar_pegawai.setOnClickListener {
+            startActivity(Intent(this@MainActivity, PegawaiListActivity::class.java))
         }
     }
 }

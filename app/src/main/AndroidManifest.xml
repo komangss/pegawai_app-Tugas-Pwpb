@@ -10,8 +10,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.PegawaiApp">
+        android:theme="@style/Theme.PegawaiApp"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".ui.PegawaiActivity"></activity>
+        <activity android:name=".ui.PegawaiListActivity" />
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
